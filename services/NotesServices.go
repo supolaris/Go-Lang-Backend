@@ -1,8 +1,10 @@
 package services
 
-type NotesService struct {
-}
+import "gorm.io/gorm"
 
+type NotesService struct {
+	db *gorm.DB
+}
 type Notes struct {
 	Id    int
 	Title string

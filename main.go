@@ -1,14 +1,22 @@
 package main
 
 import (
-	// "net/http"
+	"fmt"
 	"goProject/controller"
 
 	"github.com/gin-gonic/gin"
+
+	internal "goProject/internals/database"
 )
 
 func main() {
   router := gin.Default()
+
+	db := internal.InitDb()
+
+	if db == nil {
+		fmt.Println("Error in db")
+	}
 
 //   router.GET("/ping", func(c *gin.Context) {
 //     c.JSON(http.StatusOK, gin.H{
