@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"goProject/controller"
+	"goProject/services"
 
 	"github.com/gin-gonic/gin"
 
@@ -14,9 +15,16 @@ func main() {
 
 	db := internal.InitDb()
 
-	if db == nil {
-		fmt.Println("Error in db")
+	if db != nil { 
+		fmt.Println("Connected to db")
+	} else {
+		fmt.Println("Not connected to db")
 	}
+
+	notesService := &services.NotesService{}
+	notesService.InitService(db)
+
+
 
 //   router.GET("/ping", func(c *gin.Context) {
 //     c.JSON(http.StatusOK, gin.H{
@@ -101,7 +109,7 @@ func main() {
 
 
 notesController := &controller.NotesController{}
-notesController.InitNotesControllerRoutes(router)
+notesController.InitNotesControllerRoutes(router, *notesService)
 
   router.Run(":8080")
 }
