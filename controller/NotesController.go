@@ -11,7 +11,12 @@ type NotesController struct{
 	notesService services.NotesService
 }
 
-func (n *NotesController) InitNotesControllerRoutes(router *gin.Engine, notesService services.NotesService){
+func (n *NotesController) InitController(notesService services.NotesService) *NotesController{
+	n.notesService = notesService;
+	return n;
+}
+
+func (n *NotesController) InitRoutes(router *gin.Engine){
 	notes:= router.Group("/notes")
 	notes.GET("/", n.GetNotes())
 	notes.GET("/:id", n.GetSingleNote())
@@ -19,7 +24,6 @@ func (n *NotesController) InitNotesControllerRoutes(router *gin.Engine, notesSer
 	notes.DELETE("/:id", n.DeleteNotes())
 	notes.PUT("/", n.PutNotes())
 	notes.PATCH("/", n.PatchNotes())
-	n.notesService = notesService 
 }
 
 func (n *NotesController) GetSingleNote() gin.HandlerFunc{
@@ -28,14 +32,14 @@ func (n *NotesController) GetSingleNote() gin.HandlerFunc{
 		convertedId,err := strconv.ParseInt(id, 10, 64)
 		if err != nil {
 			ctx.JSON(400, gin.H{
-				"Error message": err.Error(),
+				"result": err.Error(),
 			})
 			return 
 		}
 		note,err := n.notesService.GetSingleNotesService(convertedId)
 		if err != nil {
 			ctx.JSON(400, gin.H{
-				"Error message": err.Error(),
+				"result": err.Error(),
 			})
 			return 
 		} else {
@@ -55,7 +59,7 @@ func (n *NotesController) GetNotes() gin.HandlerFunc{
 			actualStatus = &convertedStatus
 			if err != nil {
 				ctx.JSON(400, gin.H{
-					"Error message": err.Error(),
+					"result": err.Error(),
 				})
 				return 
 			}
@@ -65,7 +69,7 @@ func (n *NotesController) GetNotes() gin.HandlerFunc{
 		notes,err := n.notesService.GetNotesService(actualStatus)
 		if err != nil {
 			ctx.JSON(400, gin.H{
-				"Error message": err.Error(),
+				"result": err.Error(),
 			})
 			return 
 		} else {
@@ -85,14 +89,14 @@ func (n *NotesController) PostNotes() gin.HandlerFunc{
 	return func(ctx *gin.Context) {
 		if err :=	ctx.BindJSON(&notesBody); err != nil{
 			ctx.JSON(400, gin.H{
-				"Error message": err.Error(),
+				"result": err.Error(),
 			})
 			return 
 		} else {
 		note,err :=	n.notesService.CreateNotesService(notesBody.Title, notesBody.Status) 
 		if err != nil{
 			ctx.JSON(400, gin.H{
-				"Error message": err,
+				"result": err,
 			})
 			return
 		} else {
@@ -114,14 +118,14 @@ func (n *NotesController) PutNotes() gin.HandlerFunc{
 	return func(ctx *gin.Context) {
 		if err :=	ctx.BindJSON(&notesBody); err != nil{
 			ctx.JSON(400, gin.H{
-				"Error message": err.Error(),
+				"result": err.Error(),
 			})
 			return 
 		} else {
 		note,err :=	n.notesService.UpdateNotesService(notesBody.Title, notesBody.Status, notesBody.Id) 
 		if err != nil{
 			ctx.JSON(400, gin.H{
-				"Error message": err,
+				"result": err,
 			})
 			return
 		} else {
@@ -139,14 +143,14 @@ func (n *NotesController) DeleteNotes() gin.HandlerFunc{
 		convertedId,err := strconv.ParseInt(id, 10, 64)
 		if err != nil{
 			ctx.JSON(400, gin.H{
-				"Error message": err,
+				"result": err,
 			})
 			return
 		}
 		err = n.notesService.DeleteNotesService(convertedId)
 		if err != nil{
 			ctx.JSON(400, gin.H{
-				"Error message": err,
+				"result": err,
 			})
 			return
 		} else {
@@ -157,7 +161,6 @@ func (n *NotesController) DeleteNotes() gin.HandlerFunc{
 	}
 }
 
-
 func (n *NotesController) PatchNotes() gin.HandlerFunc{
 	return func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
@@ -165,4 +168,3 @@ func (n *NotesController) PatchNotes() gin.HandlerFunc{
 		})
 	}
 }
-

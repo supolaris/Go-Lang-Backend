@@ -31,12 +31,10 @@ func (n *NotesService) GetSingleNotesService(id int64) ([]*internal.Notes, error
 
 func (n *NotesService) GetNotesService(status *bool) ([]*internal.Notes, error) {
 	var notes []*internal.Notes
-
 	query := n.db
 	if status != nil {
 		query = query.Where("status = ?", status)
 	}
-
 	if err := query.Find(&notes).Error; err !=nil {
 		return nil,err
 	} else {
@@ -89,5 +87,3 @@ func (n *NotesService) DeleteNotesService(id int64) (error) {
 	}
 	return nil
 }
-
-
