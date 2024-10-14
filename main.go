@@ -11,9 +11,9 @@ import (
 )
 
 func main() {
-  router := gin.Default()
+	router := gin.Default()
 	db := internal.InitDb()
-	if db != nil { 
+	if db != nil {
 		fmt.Println("Connected to db")
 	} else {
 		fmt.Println("Not connected to db")
@@ -24,11 +24,9 @@ func main() {
 	notesController.InitController(*notesService)
 	notesController.InitRoutes(router)
 
-
-	//auth
 	authService := services.InitAuthService(db)
 	authController := controller.InitController(authService)
 	authController.InitRoutes(router)
-	//
-  router.Run(":8080")
+
+	router.Run(":8080")
 }

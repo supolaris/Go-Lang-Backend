@@ -1,8 +1,8 @@
-package internal
+package model
 
 type User struct {
 	Id       int    `gorm:"primaryKey;autoIncrement" json:"id"`
-	Email    string `json:"email"`
+	Email    string `gorm:"unique;not null" json:"email" binding:"required"`
 	Password string `json:"password"`
 }
 
